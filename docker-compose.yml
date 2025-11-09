@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: odlrs-backend
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app   # Mount project folder for live code updates
+    ports:
+      - "8000:8000"
+    environment:
+      PYTHONDONTWRITEBYTECODE: 1
+      PYTHONUNBUFFERED: 1
+    depends_on:
+      - db
+    
+
+
+  db:
+    image: nouchka/sqlite3  # optional lightweight SQLite container
+    container_name: odlrs-db
+    volumes:
+      - ./db.sqlite3:/db/db.sqlite3
+

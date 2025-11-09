@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+<div class="login-bg box">
+    <div class="container">
+        <div class="card log-box">
+            <div class="card-body">
+                <h3>{% trans "Sign Up" %}</h3>
+
+                <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+
+                    <!-- Username -->
+                    <div class="mb-3">
+                        {{ form.username.label_tag }}
+                        {{ form.username }}
+                        <small class="text-danger" id="username-error"></small>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-3">
+                        {{ form.email.label_tag }}
+                        {{ form.email }}
+                        <small class="text-danger" id="email-error"></small>
+                    </div>
+
+                    <!-- Password1 -->
+                    <div class="mb-3">
+                        {{ form.password1.label_tag }}
+                        {{ form.password1 }}
+                        <small class="text-danger" id="password1-error"></small>
+                    </div>
+
+                    <!-- Password2 -->
+                    <div class="mb-3">
+                        {{ form.password2.label_tag }}
+                        {{ form.password2 }}
+                        <small class="text-danger" id="password2-error"></small>
+                    </div>
+
+                    {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                    {% endif %}
+
+                    <button type="submit" class="btn w-100 my-2 login-btn text-uppercase">{% trans "Sign Up" %}</button>
+                </form>
+
+                <div class="boxx2 text-center">
+                    <span>
+                        {% blocktrans %}
+                        <strong>Already have an account?</strong>
+                        <a href="{{ login_url }}">SIGN IN</a>
+                        {% endblocktrans %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    small.text-danger {
+        display: block;
+        margin-top: 3px;
+        font-size: 0.85rem;
+    }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const username = document.getElementById("id_username");
+    const email = document.getElementById("id_email");
+    const password1 = document.getElementById("id_password1");
+    const password2 = document.getElementById("id_password2");
+
+    const usernameError = document.getElementById("username-error");
+    const emailError = document.getElementById("email-error");
+    const password1Error = document.getElementById("password1-error");
+    const password2Error = document.getElementById("password2-error");
+
+    function validateUsername() {
+        const value = username.value.trim();
+        if (!value) {
+            usernameError.textContent = "Username is required.";
+            return false;
+        } else if (value.length < 3) {
+            usernameError.textContent = "Username must be at least 3 characters.";
+            return false;
+        } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+            usernameError.textContent = "Only letters, numbers, and underscores are allowed.";
+            return false;
+        }
+        usernameError.textContent = "";
+        return true;
+    }
+
+    function validateEmail() {
+        const value = email.value.trim();
+        if (!value) {
+            emailError.textContent = "Email is required.";
+            return false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            emailError.textContent = "Enter a valid email address.";
+            return false;
+        }
+        emailError.textContent = "";
+        return true;
+    }
+
+    function validatePassword1() {
+        const value = password1.value;
+        if (!value) {
+            password1Error.textContent = "Password is required.";
+            return false;
+        } else if (value.length < 8) {
+            password1Error.textContent = "Password must be at least 8 characters.";
+            return false;
+        }
+        password1Error.textContent = "";
+        return true;
+    }
+
+    function validatePassword2() {
+        if (password2.value !== password1.value) {
+            password2Error.textContent = "Passwords do not match.";
+            return false;
+        }
+        password2Error.textContent = "";
+        return true;
+    }
+
+    username.addEventListener("input", validateUsername);
+    email.addEventListener("input", validateEmail);
+    password1.addEventListener("input", validatePassword1);
+    password2.addEventListener("input", validatePassword2);
+
+    document.getElementById("signup_form").addEventListener("submit", function(e) {
+        const valid = validateUsername() & validateEmail() & validatePassword1() & validatePassword2();
+        if (!valid) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %}
