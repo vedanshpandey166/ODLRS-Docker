@@ -1,5 +1,4 @@
 # python image as base or parent image 
-
 FROM python:3.8-slim-bullseye
 
 # Disable .pyc and enable unbuffered logging
