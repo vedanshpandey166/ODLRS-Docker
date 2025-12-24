@@ -23,5 +23,5 @@ services:
     image: nouchka/sqlite3  # optional lightweight SQLite container
     container_name: odlrs-db
     volumes:
-      - ./db.sqlite3:/db/db.sqlite3
+      - ./db.sqlite3:/app/db.sqlite3
 
